@@ -302,6 +302,89 @@
         </div>
     </div>
 
+    <!-- Criteri -->
+    <div class="example-section">
+        <div class="section-label">Criteri dell'Analisi dei Profili</div>
+
+        <div class="example-table-wrap">
+            <table class="example-table">
+                <thead>
+                    <tr>
+                        <th>Condizione</th>
+                        <th>Profilo</th>
+                        <th>Motivazione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>p > pm & r < rm<br>power >= maxPower * 0.8</td>
+                        <td>🟣  LEADER</td>
+                        <td class="note-col">Non solo riceve molte preferenze, ma è scelto da studenti che hanno a loro volta un alto numero di scelte.</td>
+                    </tr>
+                    <tr>
+                        <td>p > pm & r < rm</td>
+                        <td>🔵 POPOLARE</td>
+                        <td class="note-col">Molto cercato, quasi mai rifiutato. È il leader positivo.</td>
+                    </tr>
+                    <tr>
+                        <td>p > pm & r = rm</td>
+                        <td>🟢 ACCETTATO</td>
+                        <td class="note-col">Molto cercato, ma con una dose di attrito normale.</td>
+                    </tr>
+                    <tr>
+                        <td>p = pm & r < rm</td>
+                        <td>🟢 ACCETTATO</td>
+                        <td class="note-col">Gode di una buona armonia, anche se non è al centro dell'attenzione.</td>
+                    </tr>
+                    <tr>
+                        <td>p = pm & r = rm</td>
+                        <td>🟢 ACCETTATO</td>
+                        <td class="note-col">Lo studente "medio". È ben integrato nel tessuto sociale.</td>
+                    </tr>
+                    <tr>
+                        <td>p > pm & r > rm</td>
+                        <td>🟡 CONTROVERSO</td>
+                        <td class="note-col">Alto impatto sociale, ma divide il gruppo (amato o odiato).</td>
+                    </tr>
+                    <tr>
+                        <td>p < pm & r < rm</td>
+                        <td>🟠 EMARGINATO</td>
+                        <td class="note-col">Il "fantasma". Non è odiato, ma è invisibile al gruppo.</td>
+                    </tr>
+                    <tr>
+                        <td>p < pm & r = rm</td>
+                        <td>🟠 EMARGINATO</td>
+                        <td class="note-col">Poco scelto e con rifiuti nella media. Rischio isolamento.</td>
+                    </tr>
+                    <tr>
+                        <td>p = pm & r > rm</td>
+                        <td>🔴 RIFIUTATO (Lieve)</td>
+                        <td class="note-col">Riceve rifiuti sopra la media senza avere preferenze che compensino.</td>
+                    </tr>
+                    <tr>
+                        <td>p < pm & r > rm</td>
+                        <td>🔴 RIFIUTATO</td>
+                        <td class="note-col">Attivamente escluso. Situazione di potenziale disagio/bullismo.</td>
+                    </tr>
+                    <tr>
+                        <td>p = 0 & r = 0</td>
+                        <td>⚪ ISOLATO</td>
+                        <td class="note-col">Soggetto con impatto sociale nullo. Non riceve alcuna preferenza positiva ma nemmeno alcun rifiuto.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="example-box" style="margin-top:1.25rem">
+            <strong>LEGENDA:</strong><br>
+            <code>p → Preferenze ricevute</code><br>
+            <code>r → Rifiuti ricevuti</code><br>
+            <code>power → calcola il peso delle preferenze; utile a calcolare il leader</code><br>
+            <code>pm → Media delle Preferenze</code><br>
+            <code>rm → Media dei Rifiuti</code><br>
+        </div>
+    </div>
+
     <!-- Torna al sito -->
     <div style="text-align:center; margin-top:2.5rem;">
         <a href="../index.html" class="btn" style="font-size:15px; padding:12px 32px; border-color: var(--color-border-primary); color: var(--color-border-primary); text-decoration: none;">

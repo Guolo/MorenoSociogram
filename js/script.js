@@ -155,8 +155,17 @@ function buildMatrix(csv) {
         tableContainer.classList.add('compact-table');
     }
 
-    const profili = { leader: [], popolare: [], accettato: [], controverso: [], rifiutato: [], isolato: [] };
     const powerScores = {};
+    const offset = avgPrefs * 0.2;
+    const profili = {
+        leader: [],
+        popolare: [],
+        accettato: [],
+        emarginato: [],
+        controverso: [],
+        rifiutato: [],
+        isolato: []
+    };
     students.forEach(s => {
         let score = 0;
         chiLoHaScelto[s.n].forEach(idChiSceglie => { score += prefRic[idChiSceglie]; });
@@ -169,12 +178,35 @@ function buildMatrix(csv) {
         const r = rifRic[s.n];
         const power = powerScores[s.n];
 
-        if (p === 0 && r === 0) profili.isolato.push(s.name);
-        else if (p > avgPrefs && r > avgRif) profili.controverso.push(s.name);
-        else if (p > avgPrefs && power >= maxPower * 0.8 && power > 0) profili.leader.push(s.name);
-        else if (p > avgPrefs) profili.popolare.push(s.name);
-        else if (r > avgRif) profili.rifiutato.push(s.name);
-        else profili.accettato.push(s.name);
+        // Soglie dinamiche con cuscinetto
+        const sopraMediaP = p > (avgPrefs + offset);
+        const sopraMediaR = r > (avgRif + offset);
+        const sottoMediaP = p < avgPrefs; // Per l'emarginato siamo più sensibili
+        const sottoMediaR = r <= (avgRif);
+
+        if (p === 0 && r === 0) {
+            profili.isolato.push(s.name);
+        }
+        else if (sopraMediaP && sopraMediaR) {
+            profili.controverso.push(s.name);
+        }
+        else if (sopraMediaP && power >= maxPower * 0.8 && power > 0) {
+            profili.leader.push(s.name);
+        }
+        else if (sopraMediaP) {
+            profili.popolare.push(s.name);
+        }
+        else if (sopraMediaR) {
+            profili.rifiutato.push(s.name);
+        }
+        else if (sottoMediaP && sottoMediaR) {
+            // Se sei sotto la media di preferenze e non hai particolari rifiuti
+            profili.emarginato.push(s.name);
+        }
+        else {
+            // Tutti gli altri che fluttuano intorno alla media
+            profili.accettato.push(s.name);
+        }
     });
 
     const renderList = (list) => list.length ? list.join(', ') : '<span class="empty-msg">Nessun soggetto rilevato</span>';
@@ -182,32 +214,37 @@ function buildMatrix(csv) {
     analysisContainer.innerHTML = `
         <div class="profile-card p-leader">
             <div class="profile-title">🟣 LEADER</div>
-            <div class="profile-desc">Il più riconosciuto dal gruppo. L'influenza si esercita su molti soggetti poiché scelto da persone a loro volta molto scelte.</div>
+            <div class="profile-desc">Il riferimento del gruppo, scelto da altri soggetti influenti.</div>
             <div class="profile-list">${renderList(profili.leader)}</div>
         </div>
         <div class="profile-card p-popolare">
             <div class="profile-title">🔵 POPOLARE</div>
-            <div class="profile-desc">Considerato da molti (preferenze sopra la media), ma ha legami meno influenti rispetto al leader.</div>
+            <div class="profile-desc">Molto cercato e ben integrato, con pochissimi rifiuti.</div>
             <div class="profile-list">${renderList(profili.popolare)}</div>
         </div>
         <div class="profile-card p-accettato">
             <div class="profile-title">🟢 ACCETTATO</div>
-            <div class="profile-desc">Preferenze nella media o poco sopra e pochi rifiuti ricevuti.</div>
+            <div class="profile-desc">Profilo equilibrato: presenzia nelle dinamiche di classe in modo positivo.</div>
             <div class="profile-list">${renderList(profili.accettato)}</div>
         </div>
         <div class="profile-card p-controverso">
             <div class="profile-title">🟡 CONTROVERSO</div>
-            <div class="profile-desc">Soggetto che divide il gruppo: riceve molte scelte ma anche molti rifiuti.</div>
+            <div class="profile-desc">Soggetto polarizzante: molto amato ma anche molto rifiutato.</div>
             <div class="profile-list">${renderList(profili.controverso)}</div>
+        </div>
+        <div class="profile-card p-emarginato">
+            <div class="profile-title">🟠 EMARGINATO</div>
+            <div class="profile-desc">Poco visibile: riceve pochissime preferenze e pochi rifiuti. Passa inosservato.</div>
+            <div class="profile-list">${renderList(profili.emarginato)}</div>
         </div>
         <div class="profile-card p-rifiutato">
             <div class="profile-title">🔴 RIFIUTATO</div>
-            <div class="profile-desc">Riceve poche scelte e un numero di rifiuti superiore alla media.</div>
+            <div class="profile-desc">Soggetto attivamente escluso da una parte significativa del gruppo.</div>
             <div class="profile-list">${renderList(profili.rifiutato)}</div>
         </div>
         <div class="profile-card p-isolato">
             <div class="profile-title">⚪ ISOLATO</div>
-            <div class="profile-desc">Nessuna preferenza ricevuta, ma nessun rifiuto. Non instaura legami visibili.</div>
+            <div class="profile-desc">Nessuna interazione rilevata (0 scelte, 0 rifiuti).</div>
             <div class="profile-list">${renderList(profili.isolato)}</div>
         </div>
     `;
